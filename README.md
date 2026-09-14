@@ -2,8 +2,6 @@
 Repo for the HALO drone project:
 Building and testing a drone to complete human pursuit tasks for the Huntsville police, using a simulation environment to develop and test the algorithms and software required.
 
-Repo for the HALO drone project
-
 keane test commit
 yo im will
 Cohen updated the read-me
