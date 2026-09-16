@@ -7,7 +7,7 @@ services:
     build:
       context: .
       args:
-        PX4_TARGET: gazebo-classic_typhoon_h480
+        PX4_TARGET: gz_x500
     image: px4-sitl-dev:latest
     privileged: true
     volumes:

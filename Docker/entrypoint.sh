@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-TARGET="${1:-${PX4_TARGET:-gazebo-classic_typhoon_h480}}"
+TARGET="${1:-${PX4_TARGET:-gz_x500}}"
 
 # /PX4-Autopilot is a persistent named volume — starts empty on first run,
 # on either platform.

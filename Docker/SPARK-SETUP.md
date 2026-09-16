@@ -68,7 +68,7 @@ that reuses the same Docker volume, so it's much faster.
 Other useful commands:
 ```
 python3 run.py bash                          # get a shell instead of launching
-python3 run.py gazebo-classic_iris           # launch a different vehicle model
+python3 run.py gz_x500_depth                 # launch a different vehicle model
 python3 run.py --platform spark              # force the Spark override explicitly
 ```
 

@@ -5,7 +5,7 @@ Windows/WSL2 machine and the NVIDIA DGX Spark, auto-detecting which
 compose override to use.
 
 Usage:
-    python run.py                    # auto-detect platform, launch typhoon_h480
+    python run.py                    # auto-detect platform, launch gz_x500
     python run.py <other_target>     # launch a different vehicle model
     python run.py bash               # skip launching, just get a shell
     python run.py --platform spark   # force a specific override
@@ -45,7 +45,7 @@ def docker_available():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("target", nargs="?", default="gazebo-classic_typhoon_h480")
+    parser.add_argument("target", nargs="?", default="gz_x500")
     parser.add_argument("--platform", choices=["windows", "spark"], default=None)
     args = parser.parse_args()
 

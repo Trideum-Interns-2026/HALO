@@ -61,7 +61,7 @@ that reuses the same Docker volume, so it's much faster.
 Other useful commands:
 ```
 python run.py bash                          # get a shell instead of launching
-python run.py gazebo-classic_iris           # launch a different vehicle model
+python run.py gz_x500_depth                 # launch a different vehicle model
 python run.py --platform windows            # force the Windows override explicitly
 ```
 

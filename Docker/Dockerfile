@@ -8,7 +8,7 @@
 
 FROM ubuntu:22.04
 
-ARG PX4_TARGET=gazebo-classic_typhoon_h480
+ARG PX4_TARGET=gz_x500
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -34,6 +34,22 @@ RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o 
     && rm -rf /var/lib/apt/lists/*
 
 RUN echo "source /opt/ros/humble/setup.bash" >> /etc/bash.bashrc
+
+# Gazebo Harmonic — installed from OSRF's own apt repo, NOT Ubuntu's
+# default archive. Ubuntu's own gz-harmonic package doesn't reliably
+# provide the CMake config files (gz-transport_DIR, gz-sim_DIR, etc.)
+# that PX4's gz_bridge module needs to find it at configure time.
+RUN curl https://packages.osrfoundation.org/gazebo.gpg --output /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] https://packages.osrfoundation.org/gazebo/ubuntu-stable $(lsb_release -cs) main" \
+       > /etc/apt/sources.list.d/gazebo-stable.list \
+    && apt-get update && apt-get install -y --no-install-recommends \
+       gz-harmonic \
+       libprotobuf-dev \
+       protobuf-compiler \
+       libopencv-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV GZ_VERSION=harmonic
 
 WORKDIR /PX4-Autopilot
 
