@@ -1,27 +1,31 @@
 #!/usr/bin/env python3
 """
-One-shot launcher for the PX4 SITL Docker setup.
-
-Builds the image if needed, then starts PX4 SITL with the Typhoon H480
-model in Gazebo Classic (or a different target if you pass one).
+One-shot launcher for the PX4 SITL Docker setup — works on both a
+Windows/WSL2 machine and the NVIDIA DGX Spark, auto-detecting which
+compose override to use.
 
 Usage:
-    python run.py                # build (if needed) + launch typhoon_h480
-    python run.py <other_target> # launch a different vehicle model
-    python run.py bash           # skip launching, just get a shell
-
-Run this from inside the folder containing Dockerfile, docker-compose.yml,
-and entrypoint.sh.
-
-Before running: make sure Docker Desktop and VcXsrv are both up.
+    python run.py                    # auto-detect platform, launch typhoon_h480
+    python run.py <other_target>     # launch a different vehicle model
+    python run.py bash               # skip launching, just get a shell
+    python run.py --platform spark   # force a specific override
 """
 
+import argparse
+import platform
 import subprocess
 import sys
 
 
+def detect_override():
+    system = platform.system()
+    machine = platform.machine().lower()
+    if system == "Linux" and machine in ("aarch64", "arm64"):
+        return "spark"
+    return "windows"
+
+
 def run(cmd):
-    """Run a command, streaming output live, and exit on failure."""
     print(f">> {' '.join(cmd)}")
     result = subprocess.run(cmd)
     if result.returncode != 0:
@@ -32,9 +36,7 @@ def run(cmd):
 def docker_available():
     try:
         result = subprocess.run(
-            ["docker", "info"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            ["docker", "info"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
         )
         return result.returncode == 0
     except FileNotFoundError:
@@ -42,19 +44,26 @@ def docker_available():
 
 
 def main():
-    target = sys.argv[1] if len(sys.argv) > 1 else "gazebo-classic_typhoon_h480"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("target", nargs="?", default="gazebo-classic_typhoon_h480")
+    parser.add_argument("--platform", choices=["windows", "spark"], default=None)
+    args = parser.parse_args()
+
+    override = args.platform or detect_override()
+    print(f">> Platform: {override}")
 
     print(">> Checking Docker is available...")
     if not docker_available():
         print("!! Docker doesn't seem to be running (or isn't installed).")
-        print("!! Start Docker Desktop and try again.")
         sys.exit(1)
 
-    print(">> Building image (skips layers that haven't changed)...")
-    run(["docker", "compose", "build"])
+    compose_files = ["-f", "docker-compose.yml", "-f", f"docker-compose.{override}.yml"]
 
-    print(f">> Starting PX4 SITL container (target: {target})...")
-    run(["docker", "compose", "run", "--rm", "px4-sitl", target])
+    print(">> Building image (skips layers that haven't changed)...")
+    run(["docker", "compose"] + compose_files + ["build"])
+
+    print(f">> Starting PX4 SITL container (target: {args.target})...")
+    run(["docker", "compose"] + compose_files + ["run", "--rm", "px4-sitl", args.target])
 
 
 if __name__ == "__main__":
