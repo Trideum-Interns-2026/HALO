@@ -10,8 +10,21 @@ Brooks updated the read-me
 
 
 
-# Movement 
-To test a movement file, change the last line of Dockerfile.mavsdk to "CMD ["/app/build/<your_file_name_here>"]. 
-Make sure that XLaunch is running and that Gazebo is running. 
-Then, in a new terminal, cd to your movement folder and run "python run_movement.py".
+# Running C++ programs
+From the repository root, run:
 
+```powershell
+python run_all.py <folder> <file.cpp>
+```
+
+The folder search is recursive, so this runs the file inside the Geolocation subfolder:
+
+```powershell
+python run_all.py Tracking_Geolocation takeoff_forward_back.cpp
+```
+
+For the Movement folder:
+
+```powershell
+python run_all.py Movement test_takeoff.cpp
+```
