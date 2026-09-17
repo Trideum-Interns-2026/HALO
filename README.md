@@ -7,3 +7,11 @@ keane test commit
 yo im will
 Cohen updated the read-me
 Brooks updated the read-me
+
+
+
+# Movement 
+To test a movement file, change the last line of Dockerfile.mavsdk to "CMD ["/app/build/<your_file_name_here>"]. 
+Make sure that XLaunch is running and that Gazebo is running. 
+Then, in a new terminal, cd to your movement folder and run "python run_movement.py".
+
