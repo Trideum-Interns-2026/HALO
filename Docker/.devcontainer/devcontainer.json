@@ -5,6 +5,7 @@
   // that stops it from auto-launching the sim on start.
   "dockerComposeFile": [
     "../docker-compose.yml",
+    "../docker-compose.wsl.yml",
     "docker-compose.extend.yml"
   ],
   "service": "px4-sitl",

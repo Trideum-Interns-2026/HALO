@@ -2,8 +2,23 @@
 # docker-compose.yml. Overrides the entrypoint so the container just stays
 # idle instead of auto-building/launching PX4 + Gazebo on start, since for
 # development you want a shell, not the sim running immediately.
+#
+# NVIDIA GPU passthrough (RTX PRO 1000, via WSL2) is added here for compute.
+#
+# NOTE: WSLg display mounts (/mnt/wslg, /tmp/.X11-unix) are deliberately
+# left out — this project is opened from a plain Windows path, so Docker
+# Desktop runs the container through its internal management VM, which
+# doesn't have WSLg's sockets shared in. Add those back once the project is
+# reopened from inside WSL (\\wsl.localhost\Ubuntu\...) instead.
 
 services:
   px4-sitl:
     entrypoint: []
     command: sleep infinity
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
