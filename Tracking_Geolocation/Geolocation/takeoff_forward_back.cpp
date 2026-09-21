@@ -38,7 +38,7 @@ std::shared_ptr<System> connect_to_vehicle(Mavsdk& mavsdk)
 
 int main()
 {
-    Mavsdk mavsdk{Mavsdk::Configuration{Mavsdk::ComponentType::GroundStation}};
+    Mavsdk mavsdk{Mavsdk::Configuration{ComponentType::GroundStation}};
     const auto system = connect_to_vehicle(mavsdk);
     if (!system) {
         std::cerr << "No PX4 vehicle found on UDP 14540.\n";

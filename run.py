@@ -5,10 +5,10 @@ Windows/WSL2 machine and the NVIDIA DGX Spark, auto-detecting which
 compose override to use.
 
 Usage:
-    python run.py                    # auto-detect platform, launch gazebo-classic_typhoon_h480
-    python run.py <other_target>     # launch a different vehicle model
-    python run.py bash               # skip launching, just get a shell
-    python run.py --platform spark   # force a specific override
+    python3 run.py                    # auto-detect platform, launch gazebo-classic_typhoon_h480
+    python3 run.py <other_target>     # launch a different vehicle model
+    python3 run.py bash               # skip launching, just get a shell
+    python3 run.py --platform spark   # force a specific override
 """
 
 import argparse
@@ -56,7 +56,21 @@ def docker_available():
         return False
 
 
+def running_inside_container():
+    return Path("/.dockerenv").exists()
+
+
 def main():
+    if running_inside_container():
+        print("!! You're running this INSIDE a container (likely the dev container).")
+        print("!! run.py launches a container from the HOST — it can't run from")
+        print("!! inside one. Open a WSL2/host terminal (not the VS Code dev")
+        print("!! container terminal) and run this from there instead.")
+        print("!!")
+        print("!! If you're in the dev container and want to launch SITL directly")
+        print("!! here, just run: fly")
+        sys.exit(1)
+
     parser = argparse.ArgumentParser()
     parser.add_argument("target", nargs="?", default="gazebo-classic_typhoon_h480")
     parser.add_argument("--platform", choices=["windows", "spark", "wsl"], default=None)

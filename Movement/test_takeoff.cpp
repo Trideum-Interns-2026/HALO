@@ -14,7 +14,7 @@ using namespace std::chrono_literals;
 
 int main()
 {
-	Mavsdk mavsdk{Mavsdk::Configuration{Mavsdk::ComponentType::GroundStation}};
+	Mavsdk mavsdk{Mavsdk::Configuration{ComponentType::GroundStation}};
 	const auto connection_result = mavsdk.add_any_connection("udp://:14540");
 	if (connection_result != ConnectionResult::Success) {
 		std::cerr << "Connection failed: " << connection_result << '\n';
